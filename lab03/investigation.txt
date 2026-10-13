@@ -1,0 +1,23 @@
+Cybersecurity Investigation
+
+1. Most failed SSH logins:
+203.0.113.10 - 51 failed attempts.
+
+2. Most targeted account:
+admin - 39 failed attempts.
+
+3. IOC matches:
+203.0.113.10, 198.51.100.24 and 203.0.113.200
+were found in the authentication log.
+
+4. Most web requests:
+203.0.113.10 - 62 requests.
+
+5. Signs of automated scanning:
+Yes. The web log contains 60 requests mentioning sqlmap,
+29 requests to /admin and 9 requests to /.env.
+
+6. Supporting evidence:
+Failed SSH login events in auth.log.
+Requests with sqlmap/1.8 in access.log.
+Requests to /admin and /.env in access.log.
