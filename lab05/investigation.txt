@@ -1,0 +1,5 @@
+1. The Total Files number is different. My Lab 4 report showed 24 files, but the automated report shows 22. The automated number is correct for the original case data because the Lab 4 count also included config-changes.txt and triage-report.txt, which I created during the lab.
+
+2. If a new collection replaced the current case data, I would only need to change CASE_DIR in triage.sh if the folder name changed. The script would automatically repeat all the commands. In Lab 4 I would have to run the commands manually again and rebuild the report.
+
+3. The report shows that suspicious.dat is actually detected as an ELF file, even though its filename ends in .dat.
