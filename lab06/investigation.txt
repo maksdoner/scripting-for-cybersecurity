@@ -1,0 +1,77 @@
+# Lab 6 Investigation
+
+## Log Comparison
+
+File                     Lines   Failed logins   First timestamp   Last timestamp  
+case/logs/auth.log        60      45              08:00:20          08:46:20  
+../lab03/auth.log         184     124             08:00:20          10:05:52  
+
+The collected auth.log is only part of the full server log. It ends at 08:46:20, while the full server log continues until 10:05:52. This means that the collected log does not show the whole attack.
+
+## 1. Top Attackers
+
+Collected log:
+
+1. 203.0.113.10 — 15 failed attempts  
+2. 198.51.100.24 — 14 failed attempts  
+3. 198.51.100.77 — 8 failed attempts  
+
+Full server log:
+
+1. 203.0.113.10 — 51 failed attempts  
+2. 198.51.100.24 — 37 failed attempts  
+3. 198.51.100.77 — 15 failed attempts  
+
+The ranking is the same in both logs. The top attacker is 203.0.113.10.
+
+In this case, the collected log gave the correct top attacker. However, because the collected log was incomplete, it could have given a wrong result if attacker activity changed later.
+
+## 2. Targeted Usernames
+
+The complete list from the full server log was:
+
+- admin — 39
+- root — 35
+- guest — 18
+- test — 13
+- backup — 13
+- oracle — 5
+- invalid — 1
+
+The word `invalid` is not actually a username.
+
+The line was:
+
+`Failed password for invalid user postgres from 203.0.113.10`
+
+My awk command always selected the word immediately after `for`. In this line, the word after `for` is `invalid`, but the real username is `postgres`. This shows that the pipeline does not correctly handle every possible log format.
+
+## 3. attacker_report.sh on access.log
+
+The script printed:
+
+- Failed password events: 0
+- No top attacker
+- No top three attackers
+- No targeted usernames
+
+The output is not technically wrong, but it is not useful for a web access log. The script searches for `Failed password`, which is used in SSH authentication logs.
+
+For access.log, I would instead search for things such as source IP addresses, suspicious URLs, status codes, and tools such as `sqlmap`.
+
+## 4. Firewall and SSH Attackers
+
+The firewall log showed:
+
+`BLOCK 203.0.113.10 -> 10.0.0.10:22`
+
+`BLOCK 198.51.100.24 -> 10.0.0.10:22`
+
+Both IP addresses were also among the main SSH attackers in auth.log.
+
+Two possible explanations are:
+
+1. The SSH attempts may have happened before the firewall started blocking these IP addresses.
+2. The firewall may have blocked only some connections, while earlier or other connections were still allowed to reach the SSH service.
+
+The firewall also blocked 203.0.113.200 on port 3389, which is normally used for RDP.
