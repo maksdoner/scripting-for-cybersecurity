@@ -1,0 +1,95 @@
+===== alice =====
+Account: alice
+Source: CURRENT
+Role:   student
+Status: active
+Failed logins:    0
+Accepted logins:  6
+Risk: NONE (no failed attempts)
+WARNING: account has plaintext credentials and successful logins
+Exit code: 0
+
+===== bob =====
+Account: bob
+Source: CURRENT
+Role:   student
+Status: active
+Failed logins:    0
+Accepted logins:  5
+Risk: NONE (no failed attempts)
+WARNING: account has plaintext credentials and successful logins
+Exit code: 0
+
+===== eve =====
+Account: eve
+Source: CURRENT
+Role:   staff
+Status: active
+Failed logins:    0
+Accepted logins:  3
+Risk: NONE (no failed attempts)
+Exit code: 0
+
+===== david =====
+Account: david
+Source: CURRENT
+Role:   student
+Status: disabled
+Failed logins:    0
+Accepted logins:  0
+Risk: NONE (no failed attempts)
+Exit code: 0
+
+===== admin =====
+Account: admin
+Source: LEGACY
+Failed logins:    17
+Accepted logins:  0
+Risk: HIGH (17 failed attempts)
+WARNING: attacker targeted a non-current account
+Exit code: 2
+
+===== root =====
+Account: root
+Source: LEGACY
+Failed logins:    10
+Accepted logins:  0
+Risk: MEDIUM (10 failed attempts)
+WARNING: attacker targeted a non-current account
+Exit code: 2
+
+===== backup =====
+Account: backup
+Source: LEGACY
+Failed logins:    4
+Accepted logins:  0
+Risk: LOW (4 failed attempts)
+WARNING: attacker targeted a non-current account
+Exit code: 2
+
+===== oracle =====
+Account: oracle
+Source: UNKNOWN
+Failed logins:    3
+Accepted logins:  0
+Risk: LOW (3 failed attempts)
+WARNING: attacker targeted a non-current account
+Exit code: 3
+
+===== nobody =====
+Account: nobody
+Source: UNKNOWN
+Failed logins:    0
+Accepted logins:  0
+Risk: NONE (no failed attempts)
+Exit code: 3
+
+## Investigation Answers
+
+1. The targeted usernames were admin, root, guest, test, backup and oracle. None of these are current accounts. Admin, root and backup are legacy accounts, while guest, test and oracle are unknown. This suggests that the attacker was probably guessing common account names instead of using the current user list.
+
+2. The legacy accounts targeted were admin, root and backup. Root would be the most dangerous if it still existed because the root account normally has full control of the system.
+
+3. No accepted logins were seen for disabled accounts. All accepted logins in the collected log came from internal 192.168.x.x addresses. This means there is no evidence in this log of a disabled account successfully logging in or of a successful external login. However, it does not prove that no compromise happened because this is only the collected log and logs may be incomplete.
+
+4. Alice and Bob both had plaintext credentials in passwords.txt and also had successful logins. Alice logged in from 4 different internal addresses and Bob logged in from 3 different internal addresses. This is worth reporting because plaintext passwords are insecure, and successful logins using accounts whose passwords were exposed could be important during an investigation.
